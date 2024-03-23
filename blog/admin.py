@@ -1,13 +1,19 @@
 from django.contrib import admin
-from blog.models import Post, User
+from blog.models import Post, Comment
+from django_summernote.admin import SummernoteModelAdmin
 
-user = User.objects.get(username='admin')
-post = Post(title='Another post', slug='another-post', body='Post body.', author=user)
-post.save()
+
+@admin.register(Comment)
+class CommentAdmin(SummernoteModelAdmin):
+    summernote_fields = ('body',)
+    list_display = ['name', 'email', 'post', 'created', 'active']
+    list_filter = ['active', 'created', 'updated']
+    search_fields = ['name', 'email', 'body']
 
 
 @admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(SummernoteModelAdmin):
+    summernote_fields = ('body',)
     list_display = ['title', 'slug', 'author', 'publish', 'status']
     list_filter = ['status', 'created', 'publish', 'author']
     search_fields = ['title', 'body']
